@@ -59,7 +59,7 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
 
     request.body = json.encode({
       "contact": phone,
-      "password":"test@123",
+      "password":password,
       "token": "f7OW_uHRSNKkYEi8JyTFHK:APA91bEbuovN97LQ6QIqwO8Aj85gIQ57m0Hm6Pm4V2M8kiiQ8efq77csFofJvdAganDTDyQlalqp2iIBJuA-X45J5aaqoU7Du9hm-5nEaryP8OSNhouCHLNq3R3YTGxFfP0SinCf0P"
     });
 
@@ -176,10 +176,10 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                             color: Colors.amber,
                             controller: _buttonController,
                             onPressed: (){
-                              // _login().then((value) {
-                              //   _buttonController.reset();
-                              // },);
-                              Navigator.push(context,MaterialPageRoute(builder: (context) => BottomNavBar()));
+                              _login().then((value) {
+                                _buttonController.reset();
+                              },);
+                              Navigator.push(context,MaterialPageRoute(builder: (context) => const BottomNavBar()));
 
                             },
                               child: const CustomTextWidget(

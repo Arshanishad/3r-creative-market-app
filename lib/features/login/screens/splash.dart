@@ -15,7 +15,9 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   Future<void> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
+    String? token = prefs.getString('auth_token'); // Ensure correct key
+
+    if (!mounted) return; // Check if widget is mounted
 
     if (token != null) {
       Navigator.pushReplacement(
@@ -29,6 +31,8 @@ class _SplashState extends State<Splash> {
       );
     }
   }
+
+
 
   @override
   void initState() {
