@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:three_r_market_live/core/widgets/custom_text_input.dart';
 import 'package:three_r_market_live/core/widgets/customtext_widget.dart';
+import 'package:three_r_market_live/features/login/screens/forgot_password_screen.dart';
 import '../../../core/globals.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'navigation_bar.dart';
@@ -78,14 +79,21 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
 
       if (!mounted) return;
       ref.read(_isLoadingProvider.notifier).update((state) => false);
-
       if (response.statusCode == 200) {
         var decodedResponse = jsonDecode(responseBody);
-        String? token = decodedResponse['token'];
-        if (token != null) {
+        if (kDebugMode) {
+          print('decodedddddd$decodedResponse');
+        }
+        String? userId = decodedResponse['userId'];
+        if (kDebugMode) {
+          print('uuuuuuuuuuu$userId');
+        }
+        if ( userId != null) {
+          if (kDebugMode) {
+            print("11111111111111111111111111111");
+          }
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('auth_token', token);
-          await prefs.setString('user_phone', phone.toString());
+          await prefs.setString('userId',decodedResponse['userId'] );
         }
         showSnackBar(context, 'Login successful!');
         Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavBar()));
@@ -167,10 +175,14 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                             ),
                           ),
-                          // SizedBox(height: w * 0.02),
-                          // const Align(
-                          //   alignment: Alignment.topLeft,
-                          //     child: CustomTextWidget(text: 'Forgot Password?',color:Colors.blue,fontSizeMultiplier: 0.028,)),
+                          SizedBox(height: w * 0.02),
+                           Align(
+                            alignment: Alignment.topLeft,
+                              child:  InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
+                                },
+                                  child: const CustomTextWidget(text: 'Forgot Password?',color:Colors.blue,fontSizeMultiplier: 0.028,))),
                           SizedBox(height: w * 0.02),
                           RoundedLoadingButton(
                             color: Colors.amber,
@@ -179,8 +191,6 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                               _login().then((value) {
                                 _buttonController.reset();
                               },);
-                              Navigator.push(context,MaterialPageRoute(builder: (context) => const BottomNavBar()));
-
                             },
                               child: const CustomTextWidget(
                                 text:  'Login',

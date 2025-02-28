@@ -2,9 +2,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:three_r_market_live/core/widgets/alert_dialog_widget.dart';
 import '../../../core/globals.dart';
 import '../../../core/widgets/customtext_widget.dart';
 import '../../../theme/palette.dart';
+import '../../login/screens/login_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -43,6 +46,17 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userId');
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (route) => false,
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +69,36 @@ class _ProfilePageState extends State<ProfilePage> {
           },
           icon: const Icon(Icons.arrow_back_outlined),
         ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: w * 0.03),
+            child: TextButton(
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: const BorderSide(color: Colors.black, width: 2),
+                  ),
+                ),
+              ),
+              onPressed: () {},
+              child: InkWell(
+                onTap: (){
+                  customAlertBox(
+                    context: context,
+                    title: 'Logout?',
+                    content: 'Are you sure you want to logout?',
+                    yes: () async {
+                     _logout();
+                    },
+                  );
+
+                },
+                  child: const CustomTextWidget(text: 'Logout',weight: FontWeight.w700,)),
+            ),
+          ),
+        ],
+
         titleSpacing: 0,
         title: const CustomTextWidget(
           text: "Profile",
@@ -69,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}", style: TextStyle(color: Colors.white)));
+            return Center(child: Text("Error: ${snapshot.error}", style: const TextStyle(color: Colors.white)));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text("No Data Available", style: TextStyle(color: Colors.white)));
           }

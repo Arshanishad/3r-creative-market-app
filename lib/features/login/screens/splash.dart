@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:three_r_market_live/core/widgets/customtext_widget.dart';
 import 'package:three_r_market_live/features/login/screens/navigation_bar.dart';
+import '../../../core/globals.dart';
 import 'login_screen.dart';
 
 class Splash extends StatefulWidget {
@@ -15,14 +17,17 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   Future<void> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('auth_token'); // Ensure correct key
+    String userId = prefs.getString('userId')??"";
+if (kDebugMode) {
+  print('userid$userId');
+}
+    if (!mounted) return;
 
-    if (!mounted) return; // Check if widget is mounted
-
-    if (token != null) {
-      Navigator.pushReplacement(
+    if (userId.isNotEmpty ) {
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const BottomNavBar()),
+        (route) => false,
       );
     } else {
       Navigator.pushReplacement(
@@ -31,6 +36,7 @@ class _SplashState extends State<Splash> {
       );
     }
   }
+
 
 
 
@@ -54,8 +60,8 @@ class _SplashState extends State<Splash> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height * 0.2,
-              width: MediaQuery.of(context).size.height * 0.2,
+              height: h * 0.2,
+              width:h* 0.2,
               decoration: const BoxDecoration(
                 gradient: LinearGradient( colors: [Colors.amber, Colors.grey],),
                 color: Colors.amber,
@@ -76,14 +82,10 @@ class _SplashState extends State<Splash> {
             // Splash Text
             const CustomTextWidget(
               text: "Welcome to 3R Market",
-          fontSizeMultiplier:0.03 ,
+          fontSizeMultiplier:0.04 ,
               color: Colors.white,
             ),
-            const SizedBox(height: 10),
-            // Loading Indicator
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
+
           ],
         ),
       ),

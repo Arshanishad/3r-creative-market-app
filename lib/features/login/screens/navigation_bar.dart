@@ -2,8 +2,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:three_r_market_live/features/login/screens/login_screen.dart';
-import '../../../core/globals.dart';
 import '../../menu/screens/menu_screen.dart';
 import '../../spot_rates/screens/spot_rates.dart';
 import 'add_button_screen.dart';
@@ -18,7 +16,6 @@ class BottomNavBar extends ConsumerStatefulWidget {
 class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   final indexProvider = StateProvider<int>((ref) => 0);
 
-  // Updated Icons for the navigation bar
   List<Widget> pages = const [
     Icon(Icons.home_filled),
     Icon(Icons.add),

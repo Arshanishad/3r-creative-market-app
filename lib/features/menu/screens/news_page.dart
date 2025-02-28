@@ -41,7 +41,7 @@ class _NewsListingPageState extends State<NewsListingPage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: const CustomTextWidget(
-          text: "Bank Details",
+          text: "News",
           color: Colors.white,
           weight: FontWeight.w700,
           fontSizeMultiplier: 0.05,
@@ -99,17 +99,17 @@ class NewsCard extends StatefulWidget {
   final VoidCallback onExpandToggle;
 
   const NewsCard({
-    Key? key,
+    super.key,
     required this.news,
     required this.isExpanded,
     required this.onExpandToggle,
-  }) : super(key: key);
+  });
 
   @override
-  _NewsCardState createState() => _NewsCardState();
+  NewsCardState createState() => NewsCardState();
 }
 
-class _NewsCardState extends State<NewsCard> {
+class NewsCardState extends State<NewsCard> {
   bool isOverflowing = false;
 
   @override

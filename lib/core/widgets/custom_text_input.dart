@@ -33,7 +33,7 @@ class CustomTextInput extends StatelessWidget {
   final bool enabled;
 
   const CustomTextInput({
-    Key? key,
+    super.key,
     required this.controller,
     this.keyboardType = TextInputType.text,
     this.validator,
@@ -60,7 +60,7 @@ class CustomTextInput extends StatelessWidget {
     this.fontSizeMultiplier = 0.033,
     this.onSaved,
     this.enabled = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

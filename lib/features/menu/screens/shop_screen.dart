@@ -47,6 +47,16 @@ class _ShopPageState extends State<ShopPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        titleSpacing: 0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_outlined,
+            color: Colors.black,
+          ),
+        ),
         backgroundColor: Colors.amber,
         automaticallyImplyLeading: false,
         title: const CustomTextWidget(

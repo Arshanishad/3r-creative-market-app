@@ -23,16 +23,16 @@ class _MenuPageState extends State<MenuPage> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         automaticallyImplyLeading: false,
-        title: const CustomTextWidget(text: "Profile",color: Colors.black,weight: FontWeight.w700,fontSizeMultiplier: 0.05,),
+        title: const CustomTextWidget(text: "Menu",color: Colors.black,weight: FontWeight.w700,fontSizeMultiplier: 0.05,),
       ),
       body:  const SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              ProfileTile(title: 'Profile', subTitle: 'subTitle', page: ProfilePage()),
-              ProfileTile(title: 'Shop', subTitle: 'subTitle', page: ShopPage()),
-              ProfileTile(title: 'Bank', subTitle: 'subTitle', page: BankDetails()),
-              ProfileTile(title: 'News', subTitle: 'subTitle', page: NewsListingPage()),
+              ProfileTile(title: 'Profile', subTitle: '', page: ProfilePage()),
+              ProfileTile(title: 'Shop', subTitle: '', page: ShopPage()),
+              ProfileTile(title: 'Bank', subTitle: '', page: BankDetails()),
+              ProfileTile(title: 'News', subTitle: '', page: NewsListingPage()),
             ],
           ),
         ),

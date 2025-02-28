@@ -6,6 +6,7 @@ import 'package:marquee/marquee.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:http/http.dart' as http;
+import 'package:three_r_market_live/features/menu/screens/news_page.dart';
 import 'dart:convert';
 import '../../../core/globals.dart';
 
@@ -58,13 +59,10 @@ class _SpotRateState extends State<SpotRate> {
       final spotRatesRes = await fetchSpotRates(adminId);
       final serverURLRes = await fetchServerURL();
       final commoditiesRes = await fetchCommodities(adminId);
-      // final newsRes = await fetchNews(adminId);
-
       setState(() {
         commodities = commoditiesRes['commodities'];
         commoditiesList = spotRatesRes['info']['commodities'];
         serverURL = serverURLRes['info']['serverURL'];
-        // news = newsRes['news']['news'];
       });
       if (serverURL != null) {
         connectSocket(serverURL!);
@@ -79,7 +77,9 @@ class _SpotRateState extends State<SpotRate> {
 
   Future<String> fetchNewsTitle() async {
     try {
-      print("Fetching news...");
+      if (kDebugMode) {
+        print("Fetching news...");
+      }
 
       final response = await http.get(
         Uri.parse("https://api.task.aurify.ae/user/get-news/66e994239654078fd531dc2a"),
@@ -89,19 +89,27 @@ class _SpotRateState extends State<SpotRate> {
         },
       );
 
-      print("Response Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
+      if (kDebugMode) {
+        print("Response Status Code: ${response.statusCode}");
+      }
+      if (kDebugMode) {
+        print("Response Body: ${response.body}");
+      }
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print("Parsed Data: $data");
+        if (kDebugMode) {
+          print("Parsed Data: $data");
+        }
 
         if (data['success'] == true && data.containsKey("news")) {
           List<dynamic> newsList = data["news"]["news"] ?? [];
 
           if (newsList.isNotEmpty) {
             String titles = newsList.map((news) => news['title']).join("  |  ");
-            print("Extracted Titles: $titles");
+            if (kDebugMode) {
+              print("Extracted Titles: $titles");
+            }
             return titles;
           } else {
             return "No news available";
@@ -110,11 +118,15 @@ class _SpotRateState extends State<SpotRate> {
           return "No news available";
         }
       } else {
-        print("Failed to load news: ${response.reasonPhrase}");
+        if (kDebugMode) {
+          print("Failed to load news: ${response.reasonPhrase}");
+        }
         return "Failed to load news: ${response.statusCode}";
       }
     } catch (e) {
-      print("Error fetching news: $e");
+      if (kDebugMode) {
+        print("Error fetching news: $e");
+      }
       return "Error fetching news";
     }
   }
@@ -141,30 +153,6 @@ class _SpotRateState extends State<SpotRate> {
 
     socket.on('disconnect', (_) => print('Disconnected from WebSocket server'));
 
-    // socket.on('market-data', (data) {
-    //   if (kDebugMode) {
-    //     print("Received market data: $data");
-    //   }
-    //   if (data != null && data['epic'] != null) {
-    //     if (mounted) {
-    //       setState(() {
-    //         marketData[data['epic']] = {
-    //           ...?marketData[data['epic']],
-    //           ...data,
-    //           'bidChanged': marketData[data['epic']] != null &&
-    //               data['bid'] != marketData[data['epic']]['bid']
-    //               ? (data['bid'] > marketData[data['epic']]['bid'] ? 'up' : 'down')
-    //               : null,
-    //         };
-    //       });
-    //     }
-    //
-    //   } else {
-    //     if (kDebugMode) {
-    //       print("Received malformed market data: $data");
-    //     }
-    //   }
-    // });
     socket.on('market-data', (data) {
       if (kDebugMode) {
         print("Received market data: $data");
@@ -364,31 +352,6 @@ class _SpotRateState extends State<SpotRate> {
               if (marketData.isEmpty)
                 const Center(child: CircularProgressIndicator())
               else
-                // CarouselSlider(
-                //       options: CarouselOptions(
-                //   autoPlay: true,
-                //   autoPlayAnimationDuration: const Duration(milliseconds: 200),
-                //   onPageChanged: (index, reason) {
-                //     currentIndex = index;
-                //     setState(() {});
-                //   },
-                //   height: w * 0.4,
-                //   // enlargeCenterPage: true
-                // ),
-                //   items: commodities.map((commodity) {
-                //     final data = marketData[commodity.toUpperCase()];
-                //     if (data == null) return const SizedBox.shrink();
-                //     return _buildRateCard(
-                //       title: commodity,
-                //       bid: data['bid'].toString(),
-                //       ask: data['offer'].toString(),
-                //       low: data['low'].toString(),
-                //       high: data['high'].toString(),
-                //       color: getMetalColor(commodity),
-                //       textColor: Colors.white,
-                //       isDarkMode: false,
-                //     );
-                //   }).toList(),),
                 CarouselSlider(
                   options: CarouselOptions(
                     autoPlay: true,
@@ -455,10 +418,13 @@ class _SpotRateState extends State<SpotRate> {
                 marketData: marketData,
                 getPriceFn: getPrice,
               ),
+              SizedBox(height: w*0.03,),
               FutureBuilder<String>(
                 future: futureNewsTitle,
                 builder: (context, snapshot) {
-                  print("FutureBuilder State: ${snapshot.connectionState}");
+                  if (kDebugMode) {
+                    print("FutureBuilder State: ${snapshot.connectionState}");
+                  }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return SizedBox(
@@ -470,7 +436,9 @@ class _SpotRateState extends State<SpotRate> {
                   }
 
                   if (snapshot.hasError || !snapshot.hasData) {
-                    print("FutureBuilder Error: ${snapshot.error}");
+                    if (kDebugMode) {
+                      print("FutureBuilder Error: ${snapshot.error}");
+                    }
                     return SizedBox(
                       height: w * 0.05,
                       child: const Center(
@@ -482,25 +450,32 @@ class _SpotRateState extends State<SpotRate> {
                     );
                   }
 
-                  print("FutureBuilder Data: ${snapshot.data}");
+                  if (kDebugMode) {
+                    print("FutureBuilder Data: ${snapshot.data}");
+                  }
                   return SizedBox(
                     height: w * 0.05,
-                    child: Marquee(
-                      text: snapshot.data ?? "No news available",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: w * 0.045,
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => const NewsListingPage()));
+                      },
+                      child: Marquee(
+                        text: snapshot.data ?? "No news available",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: w * 0.045,
+                        ),
+                        scrollAxis: Axis.horizontal,
+                        blankSpace: 20.0,
+                        velocity: 100.0,
+                        pauseAfterRound: const Duration(seconds: 1),
+                        startPadding: 10.0,
+                        accelerationDuration: const Duration(seconds: 1),
+                        accelerationCurve: Curves.linear,
+                        decelerationDuration: const Duration(milliseconds: 500),
+                        decelerationCurve: Curves.easeOut,
                       ),
-                      scrollAxis: Axis.horizontal,
-                      blankSpace: 20.0,
-                      velocity: 100.0,
-                      pauseAfterRound: const Duration(seconds: 1),
-                      startPadding: 10.0,
-                      accelerationDuration: const Duration(seconds: 1),
-                      accelerationCurve: Curves.linear,
-                      decelerationDuration: const Duration(milliseconds: 500),
-                      decelerationCurve: Curves.easeOut,
                     ),
                   );
                 },
@@ -587,7 +562,7 @@ class CommodityRatesTable extends StatelessWidget {
             const SizedBox(height: 8),
             Table(
               columnWidths: const {
-                0: FlexColumnWidth(2),
+                0: FlexColumnWidth(1.4),
                 1: FlexColumnWidth(1),
                 2: FlexColumnWidth(1),
               },
@@ -621,13 +596,7 @@ class CommodityRatesTable extends StatelessWidget {
                         "${commodity['metal']} ${commodity['purity']}"
                             .toUpperCase();
                     String kg = "${commodity['unit']} ${commodity['weight']}";
-                    var marketDetails = marketData[commodityKey] ?? {};
-                    String price = marketDetails.isNotEmpty
-                        ? marketDetails['bid']?.toString() ?? 'N/A'
-                        : 'N/A';
                     final priceMap = getPriceFn(commodity: commodity);
-                    final buyPrice =
-                        priceMap['buy']?.toStringAsFixed(2) ?? 'N/A';
                     final sellPrice =
                         priceMap['sell']?.toStringAsFixed(2) ?? 'N/A';
                     return TableRow(
@@ -637,7 +606,7 @@ class CommodityRatesTable extends StatelessWidget {
                           child: Text(commodityKey),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text(kg),
                         ),
                         Padding(
