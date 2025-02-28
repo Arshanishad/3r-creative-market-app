@@ -94,7 +94,7 @@ class _NewsListingPageState extends State<NewsListingPage> {
 }
 
 class NewsCard extends StatefulWidget {
-  final Map<String, dynamic> news; // Changed from Map<String, String>
+  final Map<String, dynamic> news;
   final bool isExpanded;
   final VoidCallback onExpandToggle;
 
